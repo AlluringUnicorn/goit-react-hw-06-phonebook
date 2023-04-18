@@ -1,8 +1,13 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/contactsSlice';
 import { nanoid } from 'nanoid';
 import css from './App.module.css';
 
-const Form = ({ checkUser, createUser }) => {
+export const Form = () => {
+  const contacts = useSelector(state => state.contacts);
+  const dispatch = useDispatch();
+
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -18,6 +23,16 @@ const Form = ({ checkUser, createUser }) => {
     }
   };
 
+
+  const checkUser = name => {
+    for (let contact of contacts) {
+      if (contact.name === name) {
+        alert(`${name} is already in contacts`);
+        return false;
+      }
+    }
+  };
+
   const handleSubmit = event => {
     event.preventDefault();
 
@@ -27,11 +42,13 @@ const Form = ({ checkUser, createUser }) => {
       return;
     }
 
-    createUser({
-      id: nanoid(),
-      name,
-      number,
-    });
+    dispatch(
+      addContact({
+        id: nanoid(),
+        name,
+        number,
+      })
+    );
     setName('');
     setNumber('');
   };
@@ -70,5 +87,3 @@ const Form = ({ checkUser, createUser }) => {
     </form>
   );
 };
-
-export default Form;

@@ -1,18 +1,16 @@
 import { ListItem } from './ListItem';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
-export const ContactList = ({ contacts, handleDelete }) => {
-  return (
-    <ul>
-      {contacts.length > 0 && (
-        <ListItem contacts={contacts} handleDelete={handleDelete}></ListItem>
-      )}
-    </ul>
+export const ContactList = () => {
+  const filter = useSelector(state => state.filter);
+  const contacts = useSelector(state => state.contacts);
+
+  const normalizedFilter = filter.toLowerCase();
+
+  const filteredContacts = contacts?.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter)
   );
-};
 
-ContactList.propTypes = {
-  contacts: PropTypes.array.isRequired,
-  handleDelete: PropTypes.func.isRequired,
-}
+  return <ul>{filteredContacts.length > 0 && <ListItem></ListItem>}</ul>;
+};
 
